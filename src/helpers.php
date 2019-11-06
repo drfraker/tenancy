@@ -50,3 +50,16 @@ if (! \function_exists('global_cache')) {
         return app('globalCache');
     }
 }
+
+
+if (! function_exists('routeForTenant')) {
+    function routeForTenant($routeName, $params = [])
+    {
+        if (! tenant()) {
+            // When there is no tenant, lets just return the base route.
+            return route($routeName, $params);
+        }
+
+        return sprintf('%s://%s%s', parse_url(config('app.url'))['scheme'], tenant()->domains[0], route($routeName, $params, false));
+    }
+}
